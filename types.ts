@@ -12,6 +12,7 @@ export interface Education {
   semester: number;
   subjects: string[];
   projects: { name: string; description: string }[];
+  isUpcoming?: boolean;
 }
 
 export interface Skill {

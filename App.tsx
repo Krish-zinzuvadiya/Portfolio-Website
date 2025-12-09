@@ -3,7 +3,7 @@ import {
   Menu, X, Moon, Sun, Github, Linkedin, Mail, Instagram, 
   ExternalLink, ChevronDown, ChevronUp, ArrowUp, Download
 } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { PERSONAL_DETAILS, SKILLS, EDUCATION_DATA, PROJECTS, SOCIAL_LINKS } from './constants';
 
 function App() {
@@ -71,6 +71,29 @@ function App() {
     const body = `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`;
     
     window.location.href = `mailto:${SOCIAL_LINKS.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  };
+
+  // Animation Variants
+  const containerVariants: Variants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2
+      }
+    }
+  };
+
+  const itemVariants: Variants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        type: "spring",
+        stiffness: 100
+      }
+    }
   };
 
   return (
@@ -206,7 +229,7 @@ function App() {
               <div className="relative w-64 h-64 mx-auto md:w-80 md:h-80 mb-8 md:mb-0">
                 <div className="absolute inset-0 bg-gradient-to-br from-neon-blue to-neon-purple rounded-full opacity-20 blur-2xl"></div>
                 <img 
-                  src="https://picsum.photos/400/400" 
+                  src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=800" 
                   alt="Profile" 
                   className="relative w-full h-full object-cover rounded-full border-4 border-white dark:border-gray-800 shadow-2xl"
                 />
@@ -235,11 +258,16 @@ function App() {
               </div>
 
               <div className="mt-8">
-                <button className="flex items-center gap-2 text-neon-blue hover:text-neon-purple font-medium transition-colors group">
+                <a 
+                  href={PERSONAL_DETAILS.resume}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 text-neon-blue hover:text-neon-purple font-medium transition-colors group"
+                >
                   <Download size={20} />
                   <span>Download Resume</span>
                   <span className="block max-w-0 group-hover:max-w-full transition-all duration-500 h-0.5 bg-neon-purple"></span>
-                </button>
+                </a>
               </div>
             </div>
           </motion.div>
@@ -280,29 +308,40 @@ function App() {
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
                     >
-                      <div className="mb-4">
-                        <h4 className="text-sm font-semibold text-neon-purple mb-2 uppercase tracking-wide">Key Subjects</h4>
-                        <ul className="grid grid-cols-2 gap-2">
-                          {sem.subjects.map((sub, idx) => (
-                            <li key={idx} className="text-sm text-gray-600 dark:text-gray-300 flex items-center gap-2">
-                              <span className="w-1.5 h-1.5 rounded-full bg-neon-blue"></span>
-                              {sub}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                      
-                      <div>
-                        <h4 className="text-sm font-semibold text-neon-pink mb-2 uppercase tracking-wide">Projects</h4>
-                        <div className="space-y-3">
-                          {sem.projects.map((proj, idx) => (
-                            <div key={idx} className="bg-gray-50 dark:bg-gray-800/50 p-3 rounded-lg">
-                              <p className="font-medium text-gray-900 dark:text-gray-100">{proj.name}</p>
-                              <p className="text-xs text-gray-500 dark:text-gray-400">{proj.description}</p>
-                            </div>
-                          ))}
+                      {sem.isUpcoming ? (
+                        <div className="flex items-center justify-center h-48 rounded-lg overflow-hidden relative">
+                           <div className="absolute inset-0 bg-gray-200/20 dark:bg-black/20 backdrop-blur-md"></div>
+                           <h3 className="relative z-10 text-2xl font-bold tracking-[0.2em] text-gray-500/80 dark:text-gray-400/80 uppercase">
+                             Upcoming...
+                           </h3>
                         </div>
-                      </div>
+                      ) : (
+                        <>
+                          <div className="mb-4">
+                            <h4 className="text-sm font-semibold text-neon-purple mb-2 uppercase tracking-wide">Key Subjects</h4>
+                            <ul className="grid grid-cols-2 gap-2">
+                              {sem.subjects.map((sub, idx) => (
+                                <li key={idx} className="text-sm text-gray-600 dark:text-gray-300 flex items-center gap-2">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-neon-blue"></span>
+                                  {sub}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                          
+                          <div>
+                            <h4 className="text-sm font-semibold text-neon-pink mb-2 uppercase tracking-wide">Projects</h4>
+                            <div className="space-y-3">
+                              {sem.projects.map((proj, idx) => (
+                                <div key={idx} className="bg-gray-50 dark:bg-gray-800/50 p-3 rounded-lg">
+                                  <p className="font-medium text-gray-900 dark:text-gray-100">{proj.name}</p>
+                                  <p className="text-xs text-gray-500 dark:text-gray-400">{proj.description}</p>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </>
+                      )}
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -326,12 +365,19 @@ function App() {
             <p className="text-gray-500 dark:text-gray-400">A selection of things I've built</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <motion.div 
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.1 }}
+          >
             {PROJECTS.map((project) => (
               <motion.div
                 key={project.id}
+                variants={itemVariants}
                 whileHover={{ y: -10 }}
-                className="group bg-white dark:bg-slate-800 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl hover:shadow-neon-blue/10 transition-all duration-300 border border-gray-100 dark:border-gray-700"
+                className="group bg-white dark:bg-slate-800 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl hover:shadow-neon-blue/20 transition-all duration-300 border border-gray-100 dark:border-gray-700"
               >
                 <div className="relative h-48 overflow-hidden">
                   <img 
@@ -339,28 +385,41 @@ function App() {
                     alt={project.title} 
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
-                     <div className="flex gap-4">
-                       <a href={project.githubLink} className="p-2 bg-white/20 backdrop-blur-md rounded-full text-white hover:bg-neon-blue hover:text-black transition-colors">
+                  {/* Overlay on hover */}
+                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-4 backdrop-blur-sm">
+                       <a 
+                         href={project.githubLink} 
+                         target="_blank"
+                         rel="noopener noreferrer"
+                         className="p-3 bg-white rounded-full text-black hover:bg-neon-blue hover:text-white transition-colors transform hover:scale-110 shadow-lg"
+                         title="View GitHub"
+                       >
                          <Github size={20} />
                        </a>
-                       <a href={project.liveLink} className="p-2 bg-white/20 backdrop-blur-md rounded-full text-white hover:bg-neon-purple hover:text-white transition-colors">
+                       <a 
+                         href={project.liveLink} 
+                         target="_blank"
+                         rel="noopener noreferrer"
+                         className="p-3 bg-white rounded-full text-black hover:bg-neon-purple hover:text-white transition-colors transform hover:scale-110 shadow-lg"
+                         title="View Live Site"
+                       >
                          <ExternalLink size={20} />
                        </a>
-                     </div>
                   </div>
                 </div>
                 
                 <div className="p-6">
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-neon-blue transition-colors">
-                    {project.title}
-                  </h3>
+                  <div className="flex justify-between items-start mb-2">
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white group-hover:text-neon-blue transition-colors">
+                      {project.title}
+                    </h3>
+                  </div>
                   <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-2">
                     {project.description}
                   </p>
                   <div className="flex flex-wrap gap-2">
                     {project.tools.map((tool, idx) => (
-                      <span key={idx} className="text-xs px-2 py-1 rounded-md bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
+                      <span key={idx} className="text-xs px-2 py-1 rounded-md bg-gray-100 dark:bg-gray-700/50 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-600">
                         {tool}
                       </span>
                     ))}
@@ -368,7 +427,7 @@ function App() {
                 </div>
               </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -471,16 +530,15 @@ function App() {
       </section>
 
       {/* Footer */}
-      <footer className="py-8 bg-white dark:bg-slate-950 border-t border-gray-200 dark:border-gray-800">
-        <div className="max-w-7xl mx-auto px-4 text-center">
+      <footer className="bg-white dark:bg-black border-t border-gray-200 dark:border-gray-800 py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <p className="text-gray-500 dark:text-gray-400">
-            © {new Date().getFullYear()} Krish Zinzuvadiya. All rights reserved.
+            © {new Date().getFullYear()} {PERSONAL_DETAILS.name}. All rights reserved.
           </p>
-          <p className="text-sm text-gray-400 mt-2">Built with React, Tailwind & Passion</p>
         </div>
       </footer>
 
-      {/* Back to Top */}
+      {/* Back to Top Button */}
       <AnimatePresence>
         {showBackToTop && (
           <motion.button
@@ -488,7 +546,7 @@ function App() {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.5 }}
             onClick={scrollToTop}
-            className="fixed bottom-8 right-8 p-3 rounded-full bg-neon-blue text-black shadow-lg shadow-neon-blue/30 hover:bg-neon-purple hover:text-white transition-colors z-50"
+            className="fixed bottom-8 right-8 p-3 rounded-full bg-neon-blue text-white shadow-lg hover:bg-neon-purple transition-colors z-50"
           >
             <ArrowUp size={24} />
           </motion.button>
