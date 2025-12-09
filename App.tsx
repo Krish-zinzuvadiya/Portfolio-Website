@@ -229,7 +229,7 @@ function App() {
               <div className="relative w-64 h-64 mx-auto md:w-80 md:h-80 mb-8 md:mb-0">
                 <div className="absolute inset-0 bg-gradient-to-br from-neon-blue to-neon-purple rounded-full opacity-20 blur-2xl"></div>
                 <img 
-                  src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=800" 
+                  src="profile.jpg" 
                   alt="Profile" 
                   className="relative w-full h-full object-cover rounded-full border-4 border-white dark:border-gray-800 shadow-2xl"
                 />
@@ -237,7 +237,7 @@ function App() {
             </div>
             <div>
               <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
-                <span className="w-10 h-1 bg-neon-blue rounded-full"></span> About Me
+                <span className="w-10 h-1 bg-neon-blue rounded-full"></span> About Me 
               </h2>
               <p className="text-lg text-gray-600 dark:text-gray-300 leading-relaxed mb-8">
                 {PERSONAL_DETAILS.bio}
